@@ -31,6 +31,9 @@
       width: 90%;
       max-width: 900px;
     }
+    .text-svg text {
+      font-size: 80px;
+    }
     /* Прорисовывающийся текст */
     .stroke-text {
       fill: none;
@@ -65,13 +68,14 @@
     /* Фоновый контейнер для линий */
     .lines-bg {
       position: absolute;
-      top: 0; left: 0;
+      top: 0;
+      left: 0;
       width: 100%;
       height: 100%;
       z-index: 1;
       pointer-events: none;
     }
-    /* Стиль линии */
+    /* Стили для линий */
     .line {
       fill: none;
       stroke: rgba(0,255,0,0.5);
@@ -88,26 +92,26 @@
     /* Адаптив для мобильных устройств */
     @media (max-width: 600px) {
       .text-svg text {
-        font-size: 80px !important;
+        font-size: 120px;
       }
       .telegram-link {
-        font-size: 20px;
-        padding: 24px 36px;
+        font-size: 24px;
+        padding: 28px 40px;
       }
     }
   </style>
 </head>
 <body>
-  <!-- Фон: SVG, куда добавляются случайные линии -->
+  <!-- Фон: SVG для линий -->
   <svg class="lines-bg" id="lines-bg" viewBox="0 0 600 400" preserveAspectRatio="xMidYMid slice"></svg>
   
   <!-- Центрированный текст и кнопка -->
   <div class="center-container">
     <svg class="text-svg" viewBox="0 0 800 600">
-      <text x="50%" y="20%" text-anchor="middle" class="stroke-text" font-size="80">Make</text>
-      <text x="50%" y="40%" text-anchor="middle" class="stroke-text" font-size="80">Tattoo</text>
-      <text x="50%" y="60%" text-anchor="middle" class="stroke-text" font-size="80">Great</text>
-      <text x="50%" y="80%" text-anchor="middle" class="stroke-text" font-size="80">Again</text>
+      <text x="50%" y="20%" text-anchor="middle" class="stroke-text">Make</text>
+      <text x="50%" y="40%" text-anchor="middle" class="stroke-text">Tattoo</text>
+      <text x="50%" y="60%" text-anchor="middle" class="stroke-text">Great</text>
+      <text x="50%" y="80%" text-anchor="middle" class="stroke-text">Again</text>
     </svg>
     <a class="telegram-link" href="https://t.me/cryptostan_podslushano" target="_blank">
       Join Telegram
@@ -115,30 +119,54 @@
   </div>
 
   <script>
-    // Получаем контейнер для линий
+    // Функция, возвращающая случайную точку вне экрана (viewBox: 0–600 по x, 0–400 по y)
+    function randomEndpoint(width, height, margin) {
+      const side = Math.floor(Math.random() * 4); // 0: top, 1: right, 2: bottom, 3: left
+      let x, y;
+      if (side === 0) { // сверху
+        x = Math.random() * width;
+        y = -Math.random() * margin - 20;
+      } else if (side === 1) { // справа
+        x = width + Math.random() * margin + 20;
+        y = Math.random() * height;
+      } else if (side === 2) { // снизу
+        x = Math.random() * width;
+        y = height + Math.random() * margin + 20;
+      } else { // слева
+        x = -Math.random() * margin - 20;
+        y = Math.random() * height;
+      }
+      return { x, y };
+    }
+    
     const svg = document.getElementById('lines-bg');
-    // Количество линий
+    const width = 600, height = 400, margin = 100;
     const lineCount = 25;
     for (let i = 0; i < lineCount; i++) {
       const path = document.createElementNS('http://www.w3.org/2000/svg', 'path');
       path.setAttribute('class', 'line');
-      // Генерируем случайные координаты для кубической кривой Безье
-      const x1 = Math.random() * 600;
-      const y1 = Math.random() * 400;
-      const x2 = Math.random() * 600;
-      const y2 = Math.random() * 400;
-      const x3 = Math.random() * 600;
-      const y3 = Math.random() * 400;
-      const x4 = Math.random() * 600;
-      const y4 = Math.random() * 400;
-      const d = `M ${x1},${y1} C ${x2},${y2} ${x3},${y3} ${x4},${y4}`;
+      
+      // Генерируем стартовую и конечную точки вне экрана
+      const start = randomEndpoint(width, height, margin);
+      const end = randomEndpoint(width, height, margin);
+      
+      // Контрольные точки – случайные внутри экрана
+      const x2 = Math.random() * width;
+      const y2 = Math.random() * height;
+      const x3 = Math.random() * width;
+      const y3 = Math.random() * height;
+      
+      const d = `M ${start.x},${start.y} C ${x2},${y2} ${x3},${y3} ${end.x},${end.y}`;
       path.setAttribute('d', d);
-      // Случайное время анимации (от 3 до 8 секунд)
+      
+      // Случайная длительность анимации (от 3 до 8 секунд)
       const duration = 3 + Math.random() * 5;
       path.style.animationDuration = duration + 's';
+      
       // Случайная прозрачность
       const alpha = 0.2 + Math.random() * 0.5;
       path.setAttribute('stroke', `rgba(0,255,0,${alpha.toFixed(2)})`);
+      
       svg.appendChild(path);
     }
   </script>
