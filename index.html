@@ -4,18 +4,18 @@
   <meta charset="UTF-8" />
   <title>Make Tattoo Great Again</title>
   <style>
-    /* Убираем отступы, тёмный фон, скрываем прокрутку */
+    /* Убираем отступы, чёрный фон, скрываем прокрутку */
     html, body {
-      margin: 0; 
-      padding: 0; 
+      margin: 0;
+      padding: 0;
       width: 100%;
       height: 100%;
-      background: #000; 
-      overflow: hidden; 
+      background: #000;
+      overflow: hidden;
       font-family: Arial, sans-serif;
     }
 
-    /* Контейнер для текста/кнопки по центру */
+    /* Контейнер по центру для текста и кнопки */
     .center-container {
       position: relative;
       z-index: 2;
@@ -28,7 +28,7 @@
       color: #fff;
     }
 
-    /* SVG c текстом */
+    /* SVG с текстом */
     .text-svg {
       width: 80%;
       max-width: 800px;
@@ -51,10 +51,10 @@
       100% { stroke-dashoffset: 800; }
     }
 
-    /* Кнопка */
+    /* Кнопка (Телега) */
     .telegram-link {
       margin-top: 30px;
-      padding: 12px 24px;
+      padding: 14px 26px;
       background: #00ff00;
       color: #000;
       text-decoration: none;
@@ -66,16 +66,17 @@
       background: #00cc00;
     }
 
-    /* Фоновые анимированные линии (один большой SVG на весь экран) */
+    /* Контейнер для фоновых линий (один SVG, в который динамически добавляем пути) */
     .lines-bg {
       position: absolute;
       top: 0; left: 0;
-      width: 100%; 
+      width: 100%;
       height: 100%;
       z-index: 1;
-      pointer-events: none; /* Чтобы не мешать кликам */
+      pointer-events: none; /* не мешаем кликам по кнопке */
     }
-    /* Стили самих линий */
+
+    /* Стили для каждой линии */
     .line {
       fill: none;
       stroke: rgba(0,255,0,0.5);
@@ -83,40 +84,82 @@
       stroke-dasharray: 800;
       stroke-dashoffset: 800;
       animation: wave 6s linear infinite;
+      /* Будем переопределять duration через JS */
     }
     @keyframes wave {
       0%   { stroke-dashoffset: 800; }
       50%  { stroke-dashoffset: 0;   }
       100% { stroke-dashoffset: 800; }
     }
+
+    /* Адаптивность: на экранах до 600px увеличим шрифт */
+    @media (max-width: 600px) {
+      .stroke-text {
+        font-size: 48px;
+      }
+    }
   </style>
 </head>
 <body>
-  <!-- SVG с фоновыми линиями -->
-  <svg class="lines-bg" viewBox="0 0 600 400" preserveAspectRatio="xMidYMid slice">
-    <!-- Несколько path с разными координатами/трансформациями -->
-    <path d="M 0,200 C 150,0 450,400 600,200" class="line" 
-          style="transform: translate(0px,0px) rotate(0deg) scale(1.2);"></path>
-    <path d="M 0,100 C 200,300 400,-50 600,250" class="line"
-          style="transform: translate(-50px,50px) rotate(20deg) scale(1.3);"></path>
-    <path d="M 0,300 C 150,150 450,450 600,300" class="line"
-          style="transform: translate(50px,-50px) rotate(-15deg) scale(1.1);"></path>
-    <path d="M 0,50  C 300,150 300,300 600,350" class="line"
-          style="transform: translate(0px,0px) rotate(10deg) scale(1.4);"></path>
-    <!-- Можешь добавить ещё больше path с разными координатами -->
+  <!-- SVG, куда с помощью JS добавим множество случайных линий -->
+  <svg class="lines-bg" id="lines-bg" viewBox="0 0 600 400"
+       preserveAspectRatio="xMidYMid slice">
   </svg>
 
   <!-- Текст и кнопка по центру -->
   <div class="center-container">
     <svg class="text-svg" viewBox="0 0 800 600">
-      <text x="50%" y="20%"  text-anchor="middle" class="stroke-text" font-size="60">Make</text>
-      <text x="50%" y="40%"  text-anchor="middle" class="stroke-text" font-size="60">Tattoo</text>
-      <text x="50%" y="60%"  text-anchor="middle" class="stroke-text" font-size="60">Great</text>
-      <text x="50%" y="80%"  text-anchor="middle" class="stroke-text" font-size="60">Again</text>
+      <text x="50%" y="20%" text-anchor="middle" class="stroke-text" font-size="60">Make</text>
+      <text x="50%" y="40%" text-anchor="middle" class="stroke-text" font-size="60">Tattoo</text>
+      <text x="50%" y="60%" text-anchor="middle" class="stroke-text" font-size="60">Great</text>
+      <text x="50%" y="80%" text-anchor="middle" class="stroke-text" font-size="60">Again</text>
     </svg>
     <a class="telegram-link" href="https://t.me/cryptostan_podslushano" target="_blank">
       Join Telegram
     </a>
   </div>
+
+  <script>
+    // Получаем SVG, куда будем добавлять линии
+    const svg = document.getElementById('lines-bg');
+
+    // Сколько линий хотим?
+    const lineCount = 15;
+
+    for (let i = 0; i < lineCount; i++) {
+      // Создаём <path>
+      const path = document.createElementNS('http://www.w3.org/2000/svg', 'path');
+      path.setAttribute('class', 'line');
+
+      // Генерируем случайные координаты для кривой (M -> C -> end)
+      // Начальная точка (x1,y1)
+      const x1 = Math.random() * 600;
+      const y1 = Math.random() * 400;
+      // Точки управления (x2,y2), (x3,y3)
+      const x2 = Math.random() * 600;
+      const y2 = Math.random() * 400;
+      const x3 = Math.random() * 600;
+      const y3 = Math.random() * 400;
+      // Конечная точка (x4,y4)
+      const x4 = Math.random() * 600;
+      const y4 = Math.random() * 400;
+
+      // Формируем d-атрибут (кубическая кривая Безье)
+      const d = `M ${x1},${y1} C ${x2},${y2} ${x3},${y3} ${x4},${y4}`;
+      path.setAttribute('d', d);
+
+      // Немного рандомизируем анимацию
+      // Время анимации (3..8 секунд)
+      const duration = 3 + Math.random() * 5;
+      path.style.animationDuration = duration + 's';
+
+      // Случайная прозрачность (0.2..0.7)
+      const alpha = 0.2 + Math.random() * 0.5;
+      path.setAttribute('stroke', `rgba(0,255,0,${alpha.toFixed(2)})`);
+
+      // Добавляем path в SVG
+      svg.appendChild(path);
+    }
+  </script>
 </body>
 </html>
