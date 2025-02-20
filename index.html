@@ -2,6 +2,8 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
+  <!-- Этот тег гарантирует корректное масштабирование на мобильных устройствах -->
+  <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>Make Tattoo Great Again</title>
   <style>
     /* Основные стили */
@@ -119,9 +121,9 @@
   </div>
 
   <script>
-    // Функция, возвращающая случайную точку вне экрана (viewBox: 0–600 по x, 0–400 по y)
+    // Функция для генерации случайной точки вне экрана
     function randomEndpoint(width, height, margin) {
-      const side = Math.floor(Math.random() * 4); // 0: top, 1: right, 2: bottom, 3: left
+      const side = Math.floor(Math.random() * 4); // 0: сверху, 1: справа, 2: снизу, 3: слева
       let x, y;
       if (side === 0) { // сверху
         x = Math.random() * width;
@@ -145,28 +147,18 @@
     for (let i = 0; i < lineCount; i++) {
       const path = document.createElementNS('http://www.w3.org/2000/svg', 'path');
       path.setAttribute('class', 'line');
-      
-      // Генерируем стартовую и конечную точки вне экрана
       const start = randomEndpoint(width, height, margin);
       const end = randomEndpoint(width, height, margin);
-      
-      // Контрольные точки – случайные внутри экрана
       const x2 = Math.random() * width;
       const y2 = Math.random() * height;
       const x3 = Math.random() * width;
       const y3 = Math.random() * height;
-      
       const d = `M ${start.x},${start.y} C ${x2},${y2} ${x3},${y3} ${end.x},${end.y}`;
       path.setAttribute('d', d);
-      
-      // Случайная длительность анимации (от 3 до 8 секунд)
       const duration = 3 + Math.random() * 5;
       path.style.animationDuration = duration + 's';
-      
-      // Случайная прозрачность
       const alpha = 0.2 + Math.random() * 0.5;
       path.setAttribute('stroke', `rgba(0,255,0,${alpha.toFixed(2)})`);
-      
       svg.appendChild(path);
     }
   </script>
