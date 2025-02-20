@@ -1,30 +1,83 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Project Roadmap</title>
-    <style>
-        body { font-family: Arial, sans-serif; margin: 40px; }
-        h1 { color: #333; }
-        ul { list-style-type: none; padding: 0; }
-        li { margin-bottom: 10px; }
-        a { color: #1a73e8; text-decoration: none; }
-        a:hover { text-decoration: underline; }
-    </style>
+  <meta charset="UTF-8" />
+  <title>Minimal Tattoo Landing</title>
+  <style>
+    html, body {
+      margin: 0; 
+      padding: 0; 
+      background: #000;
+      height: 100%;
+      font-family: Arial, sans-serif;
+      display: flex; 
+      align-items: center; 
+      justify-content: center;
+      flex-direction: column;
+      color: #fff;
+    }
+
+    /* Контейнер для SVG */
+    .animation-container {
+      width: 80%;
+      max-width: 600px;
+      margin: 0 auto;
+    }
+
+    svg {
+      width: 100%;
+      height: 200px;
+    }
+
+    /* Стиль текста, который будет "рисоваться" */
+    .stroke-text {
+      font-size: 100px;
+      fill: none;
+      stroke: #00ff00;
+      stroke-width: 2;
+      stroke-linecap: round;
+      stroke-dasharray: 2000;
+      stroke-dashoffset: 2000;
+      animation: draw 4s linear infinite;
+    }
+
+    /* Анимация: рисуем слово, потом "убираем" и повторяем */
+    @keyframes draw {
+      0%   { stroke-dashoffset: 2000; }
+      40%  { stroke-dashoffset: 0; }
+      60%  { stroke-dashoffset: 0; }
+      100% { stroke-dashoffset: 2000; }
+    }
+
+    /* Кнопка (ссылка на Телегу) */
+    a.telegram-link {
+      display: inline-block;
+      margin-top: 40px;
+      padding: 12px 24px;
+      background: #00ff00;
+      color: #000;
+      text-decoration: none;
+      border-radius: 4px;
+      font-weight: bold;
+      transition: background 0.3s ease;
+    }
+
+    a.telegram-link:hover {
+      background: #00cc00;
+    }
+  </style>
 </head>
 <body>
-    <h1>Project Roadmap</h1>
-    <ul>
-        <li><strong>Q1 2025:</strong> Project Initiation</li>
-        <li><strong>Q2 2025:</strong> Beta Release</li>
-        <li><strong>Q3 2025:</strong> Public Launch</li>
-        <li><strong>Q4 2025:</strong> Community Expansion</li>
-    </ul>
-    <h2>Join Our Community</h2>
-    <p>Connect with us on:
-        <a href="https://discord.com/invite/yourcommunity" target="_blank">Discord</a> |
-        <a href="https://twitter.com/yourprofile" target="_blank">Twitter</a>
-    </p>
+  <div class="animation-container">
+    <svg viewBox="0 0 600 200">
+      <!-- Текст по центру, рисуем "Tattoo" -->
+      <text x="50%" y="50%" text-anchor="middle" dy=".35em" class="stroke-text">Tattoo</text>
+    </svg>
+  </div>
+
+  <!-- Кнопка с ссылкой на Телеграм -->
+  <a class="telegram-link" href="https://t.me/YourTelegramChannel" target="_blank">
+    Join Telegram
+  </a>
 </body>
 </html>
